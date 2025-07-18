@@ -23,19 +23,30 @@ const ProductForm = ({ visible, onClose, onSave, initialValues }) => {
   }, [visible, initialValues]);
 
   const handleSubmit = async (values) => {
-    // ✅ Strip product_id, productId, and _id to avoid backend conflicts
-    const { product_id, productId, _id, ...rest } = values;
+    // Strip productId (if present from other systems) and _id to avoid backend conflicts.
+    // product_id is now handled by the backend for new products, or present in initialValues for updates.
+    const { product_id, productId, _id, ...rest } = values; // This line was previously stripping 'product_id'.
+                                                        // Keep 'product_id' if you want to explicitly send it from the form,
+                                                        // otherwise, remove it from here if the backend generates it.
+                                                        // Based on prior resolution, 'product_id' should NOT be stripped
+                                                        // if the backend generates it. If it's a form input, it should be kept here.
+                                                        // The user's provided code still has `product_id` in destructuring.
+                                                        // If backend generates, remove `product_id` from this line:
+                                                        // const { productId, _id, ...rest } = values;
 
     const payload = {
       ...rest,
       price: Number(rest.price) || 0,
       quantity: Number(rest.quantity) || 0,
-      inStock: Number(rest.inStock) || 0,
-      outStock: Number(rest.outStock) || 0,
+      // Removed inStock and outStock from payload based on previous context,
+      // assuming these are not directly handled by the form now.
+      // If they are still needed, uncomment them from the form and here.
+      // inStock: Number(rest.inStock) || 0,
+      // outStock: Number(rest.outStock) || 0,
       stockLoadDate: rest.stockLoadDate ? rest.stockLoadDate.toISOString() : null,
       isActive: rest.isActive || false,
       options: (rest.options || []).filter(opt => opt?.type?.trim() && opt?.description?.trim())
-      // hsnSac is automatically included in 'rest' now
+      // hsnSac is automatically included in 'rest' now as it's not destructured above
     };
 
     try {
@@ -43,6 +54,8 @@ const ProductForm = ({ visible, onClose, onSave, initialValues }) => {
         await axios.put(`/api/product/${initialValues._id}`, payload);
         toast.success('Product updated');
       } else {
+        // product_id will be generated on the backend, so no need to send it from here for new products.
+        // If your schema requires it from frontend, add it back to payload.
         await axios.post('/api/product', payload);
         toast.success('Product added');
       }
@@ -84,7 +97,7 @@ const ProductForm = ({ visible, onClose, onSave, initialValues }) => {
           </Col>
         </Row>
 
-        {/* New Row for HSN/SAC Field */}
+        {/* Row for HSN/SAC Field */}
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
@@ -102,7 +115,10 @@ const ProductForm = ({ visible, onClose, onSave, initialValues }) => {
             </Form.Item>
           </Col>
         </Row>
-{/* 
+
+        {/* The following two rows (inStock/outStock and stockLoadDate) were commented out in the user's provided code.
+            If they are meant to be active fields, uncomment them. Otherwise, they remain commented. */}
+        {/*
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item name="inStock" label="In Stock">
@@ -114,14 +130,17 @@ const ProductForm = ({ visible, onClose, onSave, initialValues }) => {
               <Input type="number" placeholder="Out Stock" />
             </Form.Item>
           </Col>
-        </Row> */}
+        </Row>
+        */}
 
         <Row gutter={16}>
-          {/* <Col span={12}>
+          {/*
+          <Col span={12}>
             <Form.Item name="stockLoadDate" label="Stock Load Date">
               <DatePicker style={{ width: '100%' }} />
             </Form.Item>
-          </Col> */}
+          </Col>
+          */}
           <Col span={12}>
             {/* You can add another field here if needed, or leave blank */}
           </Col>

@@ -333,7 +333,7 @@ const QuotationList = ({
         style={{
           marginBottom: 16,
           justifyContent: "space-between",
-          width: "100%",
+          width: "10%",
         }}
       >
         <Input.Search
@@ -341,11 +341,14 @@ const QuotationList = ({
           onChange={(e) => {
             onSearch(e.target.value);
           }}
-          style={{ width: 400 }}
+          style={{ width: 200 }}
           prefix={<SearchOutlined />}
           allowClear
         />
-        <Button
+       
+      </Space>
+<div className="table">
+   <Button
           type="primary"
           onClick={() => {
             onAddNew();
@@ -356,8 +359,7 @@ const QuotationList = ({
         >
           + New Quotation
         </Button>
-      </Space>
-
+</div>
       <Table
         columns={columns}
         dataSource={quotations}

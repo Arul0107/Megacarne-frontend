@@ -90,9 +90,7 @@ const ProductNotesDrawer = ({ visible, onClose, product, refreshProducts }) => {
           <Form.Item name="note" rules={[{ required: true, message: 'Please enter a note' }]}>
             <TextArea rows={3} placeholder="Type your note here" />
           </Form.Item>
-          <Button type="primary"
-           style={{ backgroundColor: '#ef7a1b', borderColor: '#orange', color: 'white' }} 
-          htmlType="submit" loading={loading} block icon={<SendOutlined />}>
+          <Button type="primary" htmlType="submit" loading={loading} block icon={<SendOutlined />}>
             Add Note
           </Button>
         </Form>
